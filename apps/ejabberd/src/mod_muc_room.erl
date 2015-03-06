@@ -2558,6 +2558,7 @@ process_iq_admin(From, get, Lang, SubEl, StateData) ->
                 Affiliation ->
                     if
                     (FAffiliation == owner) or
+                    (FAffiliation == member) or
                     (FAffiliation == admin) ->
                         Items = items_with_affiliation(
                               Affiliation, StateData),
