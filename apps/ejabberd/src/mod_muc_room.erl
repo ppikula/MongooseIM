@@ -3562,6 +3562,8 @@ set_xoption([{<<"muc#roomconfig_maxusers">>, [Val]} | Opts], Config) ->
     end;
 set_xoption([{<<"muc#roomconfig_enablelogging">>, [Val]} | Opts], Config) ->
     ?SET_BOOL_XOPT(logging, Val);
+set_xoption([{<<"muc#roomconfig_getmemberlist">>, [Val]} | Opts], Config) ->
+    ?SET_JIDMULTI_XOPT(getmemberlist, Val);
 set_xoption([{<<"FORM_TYPE">>, _} | Opts], Config) ->
     %% Ignore our FORM_TYPE
     set_xoption(Opts, Config);
@@ -3691,6 +3693,7 @@ make_opts(StateData) ->
      ?MAKE_CONFIG_OPT(anonymous),
      ?MAKE_CONFIG_OPT(logging),
      ?MAKE_CONFIG_OPT(max_users),
+     ?MAKE_CONFIG_OPT(getmemberlist),
      {affiliations, ?DICT:to_list(StateData#state.affiliations)},
      {subject, StateData#state.subject},
      {subject_author, StateData#state.subject_author}
