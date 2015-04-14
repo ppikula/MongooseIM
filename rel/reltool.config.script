@@ -7,6 +7,8 @@ Conf = case file:consult(ConfigureOut) of
 
 BaseAppsToRun = [compiler,
                  lager,
+                 syslog,
+                 lager_syslog,
                  kernel,
                  mnesia,
                  sasl,
