@@ -19,7 +19,7 @@
 
 %% API
 -export([update/2,
-         start_graphite_reporter/1,
+         start_graphite_reporter/2,
          start_host_metrics_subscriptions/3,
          start_vm_metrics_subscriptions/2,
          start_global_metrics_subscriptions/2,
@@ -45,12 +45,12 @@ update(Name, Change) when is_tuple(Name)->
 update(Name, Change) ->
     exometer:update(Name, Change).
 
-start_graphite_reporter(GraphiteHost) ->
+start_graphite_reporter(GraphiteHost, ApiKey) ->
     GraphiteOpts = [{prefix, "exometer." ++ atom_to_list(node())},
         {host, GraphiteHost},
         {connect_timeout, 5000},
         {port, 2003},
-        {api_key, ""}],
+        {api_key, ApiKey}],
     case exometer_report:add_reporter(exometer_report_graphite, GraphiteOpts) of
         ok ->
             {ok, exometer_report_graphite};
