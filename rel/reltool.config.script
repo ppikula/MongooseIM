@@ -62,7 +62,7 @@ IncludeApps = lists:map(fun(App) -> {app, App, [{incl_cond, include}]} end, Apps
 [{sys, [
         {lib_dirs, ["../apps", "../deps"]},
         {incl_cond, exclude},
-        {rel, "mongooseim", "", [mongoose | AppsToRun]},
+        {rel, "mongooseim", "", [mongooseim | AppsToRun]},
         {rel, "start_clean", "", [kernel,stdlib]},
         {boot_rel, "mongooseim"},
         {profile, embedded},
@@ -70,7 +70,7 @@ IncludeApps = lists:map(fun(App) -> {app, App, [{incl_cond, include}]} end, Apps
         {excl_sys_filters, ["^bin/.*",
                             "^erts.*/bin/(dialyzer|typer)"]},
 
-        {app, mongoose, [{incl_cond, include}, {lib_dir, ".."}]}
+        {app, mongooseim, [{incl_cond, include}, {lib_dir, ".."}]}
        ] ++ IncludeApps},
 
 
@@ -79,14 +79,23 @@ IncludeApps = lists:map(fun(App) -> {app, App, [{incl_cond, include}]} end, Apps
 {overlay_vars, "vars.config"},
 
 {overlay, [{mkdir, "log/sasl"},
+           {mkdir, "var"},
+           {mkdir, "var/log"},
+           {mkdir, "priv"},
+           {mkdir, "priv/ssl"},
+
 	       {copy, "files/erl", "\{\{erts_vsn\}\}/bin/erl"},
 	       {copy, "files/nodetool", "\{\{erts_vsn\}\}/bin/nodetool"},
            {copy, "files/mongooseim", "bin/mongooseim"},
            {copy, "files/mongooseimctl", "bin/mongooseimctl"},
            {copy, "files/app.config", "etc/app.config"},
+
            {template, "files/vm.args", "etc/vm.args"},
            {template, "files/ejabberd.cfg", "etc/ejabberd.cfg"},
-           {mkdir, "var"},
-           {mkdir, "var/log"}
+
+           {copy, "../fake_cert.pem", "priv/ssl/fake_cert.pem"},
+           {copy, "../fake_key.pem", "priv/ssl/fake_key.pem"},
+           {copy, "../fake_server.pem", "priv/ssl/fake_server.pem"},
+           {copy, "files/sample_external_auth.py", "priv/sample_external_auth.py"}
           ]}
 ].
