@@ -246,4 +246,16 @@ init_metrics() ->
     lists:foreach(
         fun(Host) ->
             mongoose_metrics:init_predefined_host_metrics(Host)
-        end, ?MYHOSTS).
+        end, ?MYHOSTS),
+    start_graphite_reporter().
+
+start_graphite_reporter() ->
+    {ok, Reporter} = mongoose_metrics:start_graphite_reporter("graphite"),
+    mongoose_metrics:start_global_metrics_subscriptions(Reporter,  5000),
+    mongoose_metrics:start_vm_metrics_subscriptions(Reporter,  5000),
+    lists:foreach(
+      fun(Host) ->
+              mongoose_metrics:start_host_metrics_subscriptions(Reporter, Host, 5000)
+      end, ?MYHOSTS).
+
+
