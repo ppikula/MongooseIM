@@ -521,6 +521,8 @@ process_term(Term, State) ->
             add_option(listen, Listeners2, State);
         {language, Val} ->
             add_option(language, Val, State);
+        {metrics_reporter, Opts} ->
+            add_option(metrics_reporter, Opts, State);
         {sm_backend, Val} ->
             add_option(sm_backend, Val, State);
         {outgoing_s2s_port, Port} ->
@@ -906,7 +908,7 @@ apply_changes_remote(NewConfigFilePath, ConfigDiff,
            [DesiredConfigVersion, DesiredFileVersion]),
     Node = node(),
     {CC, LC, LHC} = ConfigDiff,
-    State0 = parse_file(NewConfigFilePath),    
+    State0 = parse_file(NewConfigFilePath),
     case compute_config_file_version(State0) of
         DesiredFileVersion ->
             State1 = State0#state{override_global = false,

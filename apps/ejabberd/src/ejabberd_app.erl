@@ -246,4 +246,29 @@ init_metrics() ->
     lists:foreach(
         fun(Host) ->
             mongoose_metrics:init_predefined_host_metrics(Host)
-        end, ?MYHOSTS).
+        end, ?MYHOSTS),
+    ReporterOpts = ejabberd_config:get_local_option(metrics_reporter),
+    maybe_start_reporter(ReporterOpts).
+
+maybe_start_reporter(undefined) ->
+    ok;
+maybe_start_reporter(Opts) ->
+    Interval = proplists:get_value(interval, Opts, 5000),
+    case proplists:get_value(backend, Opts) of
+        graphite ->
+            Host = proplists:get_value(host, Opts, "localhost"),
+            R = mongoose_metrics:start_graphite_reporter(Host, ""),
+            start_subscriptions(R, Interval);
+        _ ->
+            undefined
+    end,
+    ok.
+
+start_subscriptions({ok, Reporter}, Interval) ->
+    mongoose_metrics:start_global_metrics_subscriptions(Reporter, Interval),
+    lists:foreach(
+      fun(Host) ->
+              mongoose_metrics:start_host_metrics_subscriptions(Reporter, Host, Interval)
+      end, ?MYHOSTS);
+start_subscriptions(Error, _Interval) ->
+    ?ERROR_MSG("cannot start exometer reporter: ~p", [Error]).
