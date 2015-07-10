@@ -424,7 +424,7 @@ add_message_to_log(Nick1, Message, RoomJID, Opts, State) ->
                        <<"<font class=\"mj\">", Nick/binary, " ", (?T(<<"leaves the room">>))/binary, "</font><br/>">>;
                {leave, Reason} ->
                        <<"<font class=\"ml\">", Nick/binary, " ", (?T(<<"leaves the room">>))/binary, ": ",
-                            (htmlize(Reason,NoFollow,FileFormat))/binary, ": ~s</font><br/>">>;
+                            (htmlize(Reason,NoFollow,FileFormat))/binary, "</font><br/>">>;
                {kickban, "301", ""} ->
                        <<"<font class=\"mb\">", Nick/binary, " ", (?T(<<"has been banned">>))/binary, "</font><br/>">>;
                {kickban, "301", Reason} ->
