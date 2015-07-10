@@ -577,8 +577,7 @@ wait_for_feature_request({xmlstreamelement, El}, StateData) ->
 				      Mech,
 				      ClientIn) of
 		{ok, Props} ->
-		    (StateData#state.sockmod):reset_stream(
-		      StateData#state.socket),
+                catch (StateData#state.sockmod):reset_stream(StateData#state.socket),
 		    send_element(StateData,
 				  #xmlel{name = <<"success">>,
 				         attrs = [{<<"xmlns">>, ?NS_SASL}]}),
@@ -717,8 +716,7 @@ wait_for_sasl_response({xmlstreamelement, El}, StateData) ->
 	    case cyrsasl:server_step(StateData#state.sasl_state,
 				     ClientIn) of
 		{ok, Props} ->
-		    (StateData#state.sockmod):reset_stream(
-		      StateData#state.socket),
+		    catch (StateData#state.sockmod):reset_stream( StateData#state.socket),
 		    send_element(StateData,
                          #xmlel{name = <<"success">>,
                                 attrs = [{"xmlns", ?NS_SASL}]
@@ -734,8 +732,7 @@ wait_for_sasl_response({xmlstreamelement, El}, StateData) ->
 				     auth_module = AuthModule,
 				     user = U});
 		{ok, Props, ServerOut} ->
-		    (StateData#state.sockmod):reset_stream(
-		      StateData#state.socket),
+		    catch (StateData#state.sockmod):reset_stream(StateData#state.socket),
 		    send_element(StateData,
                          #xmlel{name = <<"success">>,
                                 attrs = [{"xmlns", ?NS_SASL}],
