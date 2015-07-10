@@ -2303,7 +2303,9 @@ resend_subscription_requests(#state{pending_invitations = Pending} = StateData) 
 			send_element(State, XMLPacket),
 			{value, From} =  xml:get_tag_attr(<<"from">>, XMLPacket),
 			{value, To} = xml:get_tag_attr(<<"to">>, XMLPacket),
-			BufferedStateData = buffer_out_stanza({From, To, XMLPacket}, State),
+		        FromJid = jlib:binary_to_jid(From) ,
+			ToJid = jlib:binary_to_jid(To),
+			BufferedStateData = buffer_out_stanza({FromJid, ToJid, XMLPacket}, State),
 			maybe_send_ack_request(BufferedStateData),
 			BufferedStateData
 		  end, StateData, Pending),
