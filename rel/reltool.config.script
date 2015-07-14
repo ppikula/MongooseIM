@@ -22,6 +22,7 @@ BaseAppsToRun = [compiler,
                  cowboy,
                  fusco,
                  folsom,
+                 os_mon,
                  exometer],
 
 AppsToRunIn = BaseAppsToRun ++ proplists:get_value(apps_to_run, Conf, []),
@@ -46,7 +47,6 @@ BaseAppsToInclude = AppsToRun ++
                      alarms,
                      idna,
                      recon,
-                     os_mon,
                      setup
                      ],
 
