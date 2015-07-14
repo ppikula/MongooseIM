@@ -187,7 +187,7 @@ process_sm_iq(From, To,
 -spec get_last_iq(ejabberd:iq(), SubEl :: 'undefined' | [jlib:xmlel()],
                   ejabberd:luser(), ejabberd:lserver()) -> ejabberd:iq().
 get_last_iq(IQ, SubEl, LUser, LServer) ->
-    case ejabberd_sm:get_user_resources(LUser, LServer) of
+    case ejabberd_sm:get_user_present_resources(LUser, LServer) of
         [] ->
             case get_last(LUser, LServer) of
                 {error, _Reason} ->
@@ -199,24 +199,26 @@ get_last_iq(IQ, SubEl, LUser, LServer) ->
                 {ok, TimeStamp, Status} ->
                     TimeStamp2 = now_to_seconds(now()),
                     Sec = TimeStamp2 - TimeStamp,
-                    IQ#iq{type = result,
-                        sub_el =
-                        [#xmlel{name = <<"query">>,
-                            attrs =
-                            [{<<"xmlns">>, ?NS_LAST},
-                                {<<"seconds">>,
-                                    integer_to_binary(Sec)}],
-                            children = [{xmlcdata, Status}]}]}
+                    last_activity_iq_response(IQ, Sec, Status)
             end;
         _ ->
-            IQ#iq{type = result,
-                sub_el =
-                [#xmlel{name = <<"query">>,
-                    attrs =
-                    [{<<"xmlns">>, ?NS_LAST},
-                        {<<"seconds">>, <<"0">>}],
-                    children = []}]}
+            last_activity_iq_response(IQ, 0)
     end.
+
+last_activity_iq_response(IQ, Seconds) ->
+    last_activity_iq_response(IQ, Seconds, undefined).
+last_activity_iq_response(IQ, Seconds, Status) ->
+    IQ#iq{type = result,
+          sub_el =
+          [#xmlel{name = <<"query">>,
+                  attrs =
+                  [{<<"xmlns">>, ?NS_LAST},
+                   {<<"seconds">>, integer_to_binary(Seconds)}],
+                  children = maybe_cdata(Status)}]}.
+
+maybe_cdata(undefined) -> [];
+maybe_cdata(Status) -> [{xmlcdata, Status}].
+
 
 get_last(LUser, LServer) ->
     ?BACKEND:get_last(LUser, LServer).
