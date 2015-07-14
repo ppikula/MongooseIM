@@ -1028,7 +1028,8 @@ is_occupant_or_admin(JID, StateData) ->
     FRole = get_role(JID, StateData),
     (FRole /= none) orelse
     (FAffiliation == admin) orelse
-    (FAffiliation == owner).
+    (FAffiliation == owner) orelse
+    (FAffiliation == member).
 
 %%%
 %%% Handle IQ queries of vCard
